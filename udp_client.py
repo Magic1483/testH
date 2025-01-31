@@ -82,7 +82,7 @@ def main(host='83.147.245.51', port=9999):
     print('server answer: {} {}'.format(addr, data.decode('utf-8')))
     ImportClients(json.loads(data.decode('utf-8')))
 
-    threading.Thread(target=listen,args=(sock))
+    threading.Thread(target=listen,args=(sock,)).start()
     HandleEntryPoint(sock,get_addr_from_str(CLIENT_LIST[0]))
 
     # sock.sendto(b'0', get_addr_from_str(CLIENT_LIST[0]))
