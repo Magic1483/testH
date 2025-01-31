@@ -44,6 +44,7 @@ def ConnectToClients(sock:socket.socket):
         sock.sendto(b'',get_addr_from_str(c))
 
 def listen(sock:socket.socket):
+    sock.bind(('0.0.0.0',5000))
     while True:
         try:
             data,addr = sock.recvfrom(PING_BUFFER)
