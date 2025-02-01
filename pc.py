@@ -1,32 +1,36 @@
 import socket
 import threading
 
-SERVER_IP = '83.147.245.51'  # Replace with your public server IP
+SERVER_IP = '83.147.245.51'
 SERVER_PORT = 54321
 
-def receive_messages(sock):
-    while True:
-        try:
-            data = sock.recv(4096)
-            if not data:
-                break
-            print("Received:", data.decode())
-        except:
-            break
-
-def start_pc_client():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.connect((SERVER_IP, SERVER_PORT))
-        sock.sendall(b'pc')  # Identify as PC
+def pc_client():
+    # Connect to coordinator
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        s.sendall(b"receiver")
         
-        # Start receive thread
-        receive_thread = threading.Thread(target=receive_messages, args=(sock,))
-        receive_thread.start()
+        # Create listening socket
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as listener:
+            listener.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            listener.bind(('0.0.0.0', 0))  # Auto-select port
+            listener.listen(1)
+            
+            # Send external port to coordinator
+            external_port = listener.getsockname()[1]
+            s.sendall(f"{socket.gethostbyname(socket.gethostname())}:{external_port}".encode())
+            s.recv(1024)  # Wait for READY signal
 
-        # Send messages
-        while True:
-            message = input("Enter message to send: ")
-            sock.sendall(message.encode())
+            # Accept direct connection
+            conn, addr = listener.accept()
+            print(f"Direct connection from {addr} established!")
+
+            # Start communication
+            while True:
+                data = conn.recv(1024)
+                print(f"Received: {data.decode()}")
+                response = input("Enter response: ")
+                conn.sendall(response.encode())
 
 if __name__ == "__main__":
-    start_pc_client()
+    pc_client()

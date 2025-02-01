@@ -1,32 +1,32 @@
 import socket
 import threading
 
-SERVER_IP = '83.147.245.51'  # Replace with your public server IP
+SERVER_IP = '83.147.245.51'
 SERVER_PORT = 54321
 
-def receive_messages(sock):
-    while True:
-        try:
-            data = sock.recv(4096)
-            if not data:
-                break
-            print("Received:", data.decode())
-        except:
-            break
-
-def start_phone_client():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
-        sock.connect((SERVER_IP, SERVER_PORT))
-        sock.sendall(b'phone')  # Identify as phone
+def phone_client():
+    # Connect to coordinator
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((SERVER_IP, SERVER_PORT))
+        s.sendall(b"initiator")
         
-        # Start receive thread
-        receive_thread = threading.Thread(target=receive_messages, args=(sock,))
-        receive_thread.start()
+        # Get receiver's address
+        peer_info = s.recv(1024).decode()
+        peer_ip, peer_port = peer_info.split(':')
+        print(f"Connecting to {peer_ip}:{peer_port}")
 
-        # Send messages
-        while True:
-            message = input("Enter message to send: ")
-            sock.sendall(message.encode())
+        # Attempt direct connection
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as direct_conn:
+            direct_conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            direct_conn.connect((peer_ip, int(peer_port)))
+            print("Direct connection established!")
+            
+            # Start communication
+            while True:
+                message = input("Enter message: ")
+                direct_conn.sendall(message.encode())
+                response = direct_conn.recv(1024)
+                print(f"Received: {response.decode()}")
 
 if __name__ == "__main__":
-    start_phone_client()
+    phone_client()
