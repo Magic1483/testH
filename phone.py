@@ -22,12 +22,14 @@ def phone_client():
     
     
     
-    peer_port = int(peer_port)
-    print('peer port',peer_port)
-    for i in range(peer_port-100,peer_port-100):
-        print(f'sendto {peer_ip}:{i}')
-        # sock.sendto(b"PUNCH", (peer_ip,i))
-        # time.sleep(0.1)
+    peer_port = int(peer_port)-100
+    counter = 0
+    print('peer ip port',peer_ip,peer_port)
+    while counter!=200:
+        print(f'sendto {peer_ip}:{peer_port+counter}')
+        sock.sendto(b"PUNCH", (peer_ip,peer_port+counter))
+        time.sleep(0.1)
+        counter+=1
 
    
     
