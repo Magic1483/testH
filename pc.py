@@ -22,6 +22,10 @@ def pc_client():
     
     # wait for rec
     data, addr = sock.recvfrom(1024)
+    print('phone host:port',data,addr)
+
+
+    data, addr = sock.recvfrom(1024)
     print('>',data,addr)
 
 if __name__ == "__main__":

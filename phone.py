@@ -20,14 +20,14 @@ def phone_client():
             break
         time.sleep(1)
     
-    print(f"Attempting connection to {peer_ip}:{peer_port}")
+    
     
     peer_port = int(peer_port)
+    print('peer port',peer_port)
     for i in range(peer_port-100,peer_port-100):
-        # UDP hole punching - send dummy packet
         print(f'sendto {peer_ip}:{i}')
-        sock.sendto(b"PUNCH", (peer_ip,i ))
-        time.sleep(0.1)
+        # sock.sendto(b"PUNCH", (peer_ip,i))
+        # time.sleep(0.1)
 
    
     
