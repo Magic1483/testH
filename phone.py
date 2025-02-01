@@ -1,32 +1,36 @@
 import socket
-import threading
+import time
 
 SERVER_IP = '83.147.245.51'
 SERVER_PORT = 54321
 
 def phone_client():
-    # Connect to coordinator
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((SERVER_IP, SERVER_PORT))
-        s.sendall(b"initiator")
-        
-        # Get receiver's address
-        peer_info = s.recv(1024).decode()
-        peer_ip, peer_port = peer_info.split(':')
-        print(f"Connecting to {peer_ip}:{peer_port}")
-
-        # Attempt direct connection
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as direct_conn:
-            direct_conn.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-            direct_conn.connect((peer_ip, int(peer_port)))
-            print("Direct connection established!")
-            
-            # Start communication
-            while True:
-                message = input("Enter message: ")
-                direct_conn.sendall(message.encode())
-                response = direct_conn.recv(1024)
-                print(f"Received: {response.decode()}")
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    
+    # Register as initiator
+    sock.sendto(b"register:initiator", (SERVER_IP, SERVER_PORT))
+    
+    # Get receiver coordinates
+    while True:
+        sock.sendto(b"get_receiver", (SERVER_IP, SERVER_PORT))
+        data, _ = sock.recvfrom(1024)
+        if data != b"NOT_READY":
+            peer_ip, peer_port = data.decode().split(':')
+            break
+        time.sleep(1)
+    
+    print(f"Attempting connection to {peer_ip}:{peer_port}")
+    
+    # UDP hole punching - send dummy packet
+    sock.sendto(b"PUNCH", (peer_ip, int(peer_port)))
+    
+    # Communication loop
+    while True:
+        message = input("Enter message: ")
+        sock.sendto(message.encode(), (peer_ip, int(peer_port)))
+        data, _ = sock.recvfrom(1024)
+        print(f"Received: {data.decode()}")
 
 if __name__ == "__main__":
     phone_client()
