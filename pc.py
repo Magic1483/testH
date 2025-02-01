@@ -23,7 +23,7 @@ def pc_client():
     # UDP hole punching - send dummy packet
     sock.sendto(b"PUNCH", (peer_ip, int(peer_port)))
     
-    # Communication loop
+    # wait for rec
     while True:
         data, addr = sock.recvfrom(1024)
         print(f"Received: {data.decode()}")

@@ -29,10 +29,10 @@ def phone_client():
         sock.sendto(b"PUNCH", (peer_ip,i ))
         time.sleep(0.1)
 
-    while True:
-        data, addr = sock.recvfrom(1024)
-        print(f'answer from {addr}')
-        sock.sendto(b"PUNCH", (peer_ip,i ))
+    # while True:
+    # data, addr = sock.recvfrom(1024)
+    # print(f'answer from {addr} {data}')
+        # sock.sendto(b"PUNCH", (peer_ip,))
     
 if __name__ == "__main__":
     phone_client()
