@@ -20,14 +20,9 @@ def pc_client():
     
     print(f"Expecting connection from {peer_ip}:{peer_port}")
     
-    # UDP hole punching - send dummy packet
-    sock.sendto(b"PUNCH", (peer_ip, int(peer_port)))
-    
     # wait for rec
-    while True:
-        data, addr = sock.recvfrom(1024)
-        print(f"Received: {data.decode()}")
-        sock.sendto(b'ping', addr)
+    data, addr = sock.recvfrom(1024)
+    print('>',data,addr)
 
 if __name__ == "__main__":
     pc_client()
