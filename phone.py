@@ -23,17 +23,16 @@ def phone_client():
     print(f"Attempting connection to {peer_ip}:{peer_port}")
     
     peer_port = int(peer_port)
-    for i in range(peer_port-50,peer_port+50):
+    for i in range(peer_port-100,peer_port-100):
         # UDP hole punching - send dummy packet
         print(f'sendto {peer_ip}:{i}')
         sock.sendto(b"PUNCH", (peer_ip,i ))
+        time.sleep(0.1)
 
-    # # Communication loop
-    # while True:
-    #     message = input("Enter message: ")
-    #     sock.sendto(message.encode(), (peer_ip, int(peer_port)))
-    #     data, _ = sock.recvfrom(1024)
-    #     print(f"Received: {data.decode()}")
-
+    while True:
+        data, addr = sock.recvfrom(1024)
+        print(f'answer from {addr}')
+        sock.sendto(b"PUNCH", (peer_ip,i ))
+    
 if __name__ == "__main__":
     phone_client()

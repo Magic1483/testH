@@ -27,8 +27,7 @@ def pc_client():
     while True:
         data, addr = sock.recvfrom(1024)
         print(f"Received: {data.decode()}")
-        response = input("Enter response: ")
-        sock.sendto(response.encode(), addr)
+        sock.sendto(b'ping', addr)
 
 if __name__ == "__main__":
     pc_client()
