@@ -7,8 +7,8 @@ import random
 RENDEZVOUS_SERVER = ("83.147.245.51", 50000)  # Replace with actual public IP of the server
 STUN_SERVER = "stun.l.google.com"
 STUN_PORT = 19302
-TTL_VALUES = [1, 2, 3, 4, 5]  # Short TTLs for initial NAT table entries
-BREADTH = 5  # Number of nearby ports to test for hole punching
+TTL_VALUES = [1, 2, 3, 4]  # Short TTLs for initial NAT table entries
+BREADTH = 10  # Number of nearby ports to test for hole punching
 
 def get_external_ip_port():
     """Query STUN server to get external IP and port."""
