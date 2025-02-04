@@ -8,7 +8,7 @@ RENDEZVOUS_SERVER = ("83.147.245.51", 50000)  # Replace with actual public IP of
 STUN_SERVER = "stun.l.google.com"
 STUN_PORT = 19302
 TTL_VALUES = [1, 2, 3, 4]  # Short TTLs for initial NAT table entries
-BREADTH = 5  # Number of nearby ports to test for hole punching
+BREADTH = 50  # Number of nearby ports to test for hole punching
 
 def get_external_ip_port():
     """Query STUN server to get external IP and port."""
@@ -86,6 +86,7 @@ if __name__ == "__main__":
             print(f"[+] Received Peer Info: {peer_ip}:{peer_port}")
 
             print("[*] Performing Two-Stage Hole Punching...")
+            perform_hole_punching(peer_ip, int(peer_port))
             perform_hole_punching(peer_ip, int(peer_port))
         else:
             print("[!] Failed to get peer info.")
