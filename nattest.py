@@ -5,8 +5,7 @@ import argparse
 import time
 import random
 
-STUN_SERVER = "stun.l.google.com"
-STUN_PORT = 19302
+
 
 stun_list = [
     "stun.l.google.com:19302",
