@@ -10,10 +10,10 @@ STUN_PORT = 19302
 
 stun_list = [
     "stun.l.google.com:19302",
-    "stun1.l.google.com:1930",
-    "stun2.l.google.com:1930",
-    "stun3.l.google.com:1930",
-    "stun4.l.google.com:1930"
+    "stun1.l.google.com:19302",
+    "stun2.l.google.com:19302",
+    "stun3.l.google.com:19302",
+    "stun4.l.google.com:19302"
 ]
 
 def get_external_ip_port(host,port):
