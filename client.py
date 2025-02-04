@@ -1,10 +1,10 @@
 # client.py
-import stun
+import py3stun
 import socket
 import time
 import random
 
-RENDEZVOUS_SERVER = ("<SERVER_IP>", 50000)  # Replace with actual public IP of the server
+RENDEZVOUS_SERVER = ("83.147.245.51", 50000)  # Replace with actual public IP of the server
 STUN_SERVER = "stun.l.google.com"
 STUN_PORT = 19302
 TTL_VALUES = [1, 2, 3, 4, 5]  # Short TTLs for initial NAT table entries
@@ -12,7 +12,7 @@ BREADTH = 5  # Number of nearby ports to test for hole punching
 
 def get_external_ip_port():
     """Query STUN server to get external IP and port."""
-    nat_type, external_ip, external_port = stun.get_ip_info(STUN_SERVER, STUN_PORT)
+    nat_type, external_ip, external_port = py3stun.get_ip_info(STUN_SERVER, STUN_PORT)
     return nat_type, external_ip, external_port
 
 def send_udp_probe(target_ip, target_port, ttl):
