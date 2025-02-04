@@ -12,7 +12,9 @@ BREADTH = 5  # Number of nearby ports to test for hole punching
 
 def get_external_ip_port():
     """Query STUN server to get external IP and port."""
-    nat_type, external_ip, external_port = py3stun.get_ip_info(STUN_SERVER, STUN_PORT)
+    nat_type, external_ip, external_port = py3stun.get_ip_info(
+        stun_host=STUN_SERVER, stun_port=STUN_PORT
+        )
     return nat_type, external_ip, external_port
 
 def send_udp_probe(target_ip, target_port, ttl):
