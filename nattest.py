@@ -32,8 +32,8 @@ def get_external_ip_port(host,port):
 # print(f'Timeout {args.timeout}s')
 for i,val in enumerate(stun_list):
     stun_host,stun_port = val.split(':')
-    _,ip,port = get_external_ip_port(stun_host,int(stun_port))
-    print(f'[{i+1}]',ip,port)
+    nat_type,ip,port = get_external_ip_port(stun_host,int(stun_port))
+    print(f'[{stun_host}]',ip,port,nat_type)
     time.sleep(0.1)
 
 
