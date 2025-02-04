@@ -55,11 +55,17 @@ def listen_for_udp():
 
 def perform_hole_punching(target_ip, base_port):
     """Send multiple UDP packets with different TTL values to predicted ports."""
-    for ttl in TTL_VALUES:
-        for offset in range(-BREADTH, BREADTH+1):
-            predicted_port = base_port + offset
-            send_udp_probe(target_ip, predicted_port, ttl)
-            time.sleep(0.1)
+    
+    for offset in range(-BREADTH, BREADTH+1):
+        predicted_port = base_port + offset
+        send_udp_probe(target_ip, predicted_port, 2)
+        time.sleep(0.1)
+    
+    for offset in range(-BREADTH, BREADTH+1):
+        predicted_port = base_port + offset
+        send_udp_probe(target_ip, predicted_port, 128)
+        time.sleep(0.1)
+    
 
 if __name__ == "__main__":
     print("[*] Starting NAT Traversal...")
