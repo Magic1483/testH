@@ -1,31 +1,39 @@
-# rendezvous_server.py
+import logging
 import socket
+import sys
 
-HOST = "0.0.0.0"  # Listen on all interfaces
-PORT = 50000      # Fixed communication port
 
-clients = {}
+logger = logging.getLogger()
+peers = []
 
-def handle_client(conn, addr):
-    global clients
-    data = conn.recv(1024).decode()
-    if data.startswith("REGISTER:"):
-        client_id, ip, port = data.split(":")[1:]
-        clients[client_id] = (ip, int(port))
-        conn.send(b"OK")
-    elif data.startswith("REQUEST:"):
-        client_id = data.split(":")[1]
-        if client_id in clients:
-            conn.send(f"{clients[client_id][0]}:{clients[client_id][1]}".encode())
-        else:
-            conn.send(b"UNKNOWN")
-    conn.close()
+def AddrToMsg(addr):
+    """
+    """
+    s = addr[0]+':'+str(addr[1])
+    return str(s).encode('utf8')
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-    server.bind((HOST, PORT))
-    server.listen()
-    print("[*] Rendezvous Server Started")
+def MsgToAddr(addr):
+    """
+    """
+    ip,port = addr.decode('utf8').split(':')
+    return ip,int(port)
 
+
+def main(port = 9999):
+    sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM) # UDP
+    sock.bind(('0.0.0.0',port))
     while True:
-        conn, addr = server.accept()
-        handle_client(conn, addr)
+        data,addr = sock.recvfrom(1024)
+        logger.info(f'connection from {addr}')
+        peers.append(addr)
+        if len(peers) >= 2:
+            logger.info(f'send info to client {peers[0]}')
+            sock.sendto(AddrToMsg(peers[1]),peers[0])
+            logger.info(f'send info to client {peers[0]}')
+            sock.sendto(AddrToMsg(peers[0]),peers[1])
+            peers.clear()
+
+
+if __name__ == '__main__':
+    logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
+    main()
