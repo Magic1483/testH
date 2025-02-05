@@ -36,7 +36,9 @@ def Send(sock:socket.socket,addr,window,mode):
     ttl_values = [1,2,3,4,5,6,7]
 
     while not RUN_EVENT.is_set():
-        logger.info(f'SEND TO PORT [ {addr[1]} - {addr[1]+window} ]')
+        if mode == 'r':logger.info(f'SEND SHORT TTL TO PORT [ {addr[1]} - {addr[1]+window} ]')
+        if mode == 'i':logger.info(f'SEND LONG TTL TO PORT [ {addr[1]} - {addr[1]+window} ]')
+
         for offset in range(window+1):
             msg = b'test request'
             if mode == 'r': # reciever mode
