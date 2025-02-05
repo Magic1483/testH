@@ -36,7 +36,7 @@ def Send(sock:socket.socket,addr,window):
         for offset in range(window):
             msg = b'test request'
             sock.sendto(msg,(addr[0],addr[1]+offset))
-            logger.info('SEND '+str(msg)+"PORT"+str(addr[1]+offset))
+            logger.info('SEND TO PORT'+str(addr[1]+offset))
             time.sleep(0.5)
 
 
@@ -45,6 +45,7 @@ def main(server_host = '83.147.245.51', server_port = 9999):
     # Peer 2 send long TTL packets
 
     global RUN_EVENT
+    window = 50 # offset for port of peer
     sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
     sock.sendto(b'',(server_host,server_port))      # send req to server
 
@@ -52,7 +53,7 @@ def main(server_host = '83.147.245.51', server_port = 9999):
     logger.info('Get client from server {} {}'.format(addr,data))
     addr = MsgToAddr(data) # peer info
 
-    send_th   = threading.Thread(target=Send,args=(sock,addr))
+    send_th   = threading.Thread(target=Send,args=(sock,addr,window))
     listen_th = threading.Thread(target=Listen,args=(sock,))
     send_th.start()
     listen_th.start()

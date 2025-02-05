@@ -34,7 +34,7 @@ def Send(sock:socket.socket,addr):
     while  not RUN_EVENT.is_set():
         msg = b'test request'
         sock.sendto(msg,addr)
-        logger.info('SEND '+str(msg))
+        logger.info('SEND TO'+str(addr))
         time.sleep(0.5)
 
 
@@ -55,8 +55,9 @@ def main(server_host = '83.147.245.51', server_port = 9999):
         while True:
             time.sleep(1)
     except KeyboardInterrupt:
-        logger.info('STOP Service')
         RUN_EVENT.set()
+        logger.info('STOP Service')
+
 
 
 def start():
