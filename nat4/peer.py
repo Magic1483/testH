@@ -5,6 +5,7 @@ import sys
 import time
 import threading
 import argparse
+import struct
 
 logger = logging.getLogger()
 peers = []
@@ -30,18 +31,25 @@ def Listen(sock:socket.socket):
         data,addr = sock.recvfrom(1024)
         logger.info('REC '+str(data))
 
-def Send(sock:socket.socket,addr,window):
+def Send(sock:socket.socket,addr,window,mode):
     global RUN_EVENT
+    ttl_values = [1,2,3,4,5,6,7]
+
     while not RUN_EVENT.is_set():
         logger.info(f'SEND TO PORT [ {addr[1]} - {addr[1]+window} ]')
         for offset in range(window+1):
             msg = b'test request'
-            sock.sendto(msg,(addr[0],addr[1]+offset))
+            if mode == 'r': # reciever mode
+                for t in ttl_values:
+                    sock.setsockopt(socket.IPPROTO_IP,socket.IP_TTL,struct.pack('I', t))
+                    sock.sendto(msg,(addr[0],addr[1]+offset))
+            else: # sender mode
+                sock.sendto(msg,(addr[0],addr[1]+offset))
 
         time.sleep(0.5)
 
 
-def main(server_host = '83.147.245.51', server_port = 9999):
+def main(mode,server_host = '83.147.245.51', server_port = 9999):
     # Peer 1 send short TTL packets
     # Peer 2 send long TTL packets
 
@@ -55,7 +63,7 @@ def main(server_host = '83.147.245.51', server_port = 9999):
     addr = MsgToAddr(data) # peer info
     logger.info('[ * ] Get Client '+str(addr))
 
-    send_th   = threading.Thread(target=Send,args=(sock,addr,window))
+    send_th   = threading.Thread(target=Send,args=(sock,addr,window,mode))
     listen_th = threading.Thread(target=Listen,args=(sock,))
     send_th.start()
     listen_th.start()
@@ -68,17 +76,18 @@ def main(server_host = '83.147.245.51', server_port = 9999):
 
 
 def start():
-    if len(sys.argv) < 2:
-        print('Usage python peer.py server_ip port:optional\ndefault port 9999')
+    if len(sys.argv) < 3:
+        print('Usage python peer.py server_ip mode i-initiator\nr-reciever')
         return
 
     ip = sys.argv[1]
+    mode = sys.argv[2]
     port = 9999
-    if len(sys.argv) == 3: port = int(sys.argv[2])
+    # if len(sys.argv) == 3: port = int(sys.argv[2])
 
     print('Selected server {}:{}'.format(ip,port))
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
-    main()
+    main(mode)
 
 
 if __name__ == '__main__':
