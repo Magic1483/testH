@@ -13,7 +13,7 @@ RUN_EVENT = threading.Event()
 def GroupData(arr):
     groups = {}
     for i in arr:
-        gr = str(i)[:3]
+        gr = str(i)[:2]
         if gr not in groups: groups[gr] = []
         groups[gr].append(i)
 
@@ -51,7 +51,7 @@ def main(server_host = '83.147.245.51', server_port = 9999):
         print(ports)
         res = GroupData(ports)
         for i in res.keys():
-            print('GROUP',i+'**',f'{min(res[i])}-{max(res[i])}')
+            print('GROUP',i+'***',f'{min(res[i])}-{max(res[i])}')
 
 
 
