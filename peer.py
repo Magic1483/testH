@@ -70,7 +70,7 @@ def start():
 
     print('Selected server {}:{}'.format(ip,port))
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(message)s')
-    # main()
+    main()
 
 
 if __name__ == '__main__':
