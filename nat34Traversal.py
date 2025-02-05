@@ -307,16 +307,16 @@ class N4Client:
             raise N4Error.InvalidPacket("Invalid packet from N4 Server")
 
         peer_ip, peer_port = peer
-        target = (peer_ip, peer_port + self.peer_port_offset)
+
 
         logging.info(" => Peer: %s:%d " % peer)
-        logging.info(" [ Target: %s:%d ] " % target)
+        logging.info(" [ Offset: %d ] " % self.peer_port_offset)
 
         punch_pkt = N4Packet.punch(self.ident)
         # repeat five times to avoid packet loss
-        for _ in range(5):
+        for i in range(self.peer_port_offset):
             for sock in self.pool:
-                sock.sendto(punch_pkt, target)
+                sock.sendto(punch_pkt, (peer_ip,peer_port+i))
 
         logging.info(" <= Punch ")
 
