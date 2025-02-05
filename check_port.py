@@ -27,14 +27,15 @@ def MsgToAddr(addr):
 def main(server_host = '83.147.245.51', server_port = 9999):
     global RUN_EVENT
     window = 100 # offset for port of peer
-    sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+
 
     try:
         while True:
+            sock = socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
             sock.sendto(b'',(server_host,server_port))      # send req to server
             data,addr = sock.recvfrom(1024)     # rec from server
-            logger.info('Get self info from server {} {}'.format(addr,data))
-            addr = MsgToAddr(data) # peer info
+            logger.info('P: {} {}'.format(addr,data))
+            sock.close()
             time.sleep(1)
     except KeyboardInterrupt:
         logger.info('STOP Service')
