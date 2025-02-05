@@ -5,16 +5,10 @@ import sys
 import time
 import threading
 import argparse
-import numpy as np
-import matplotlib.pyplot as pp
 
 logger = logging.getLogger()
 peers = []
 RUN_EVENT = threading.Event()
-
-def plot(arr):
-    pp.plot(arr,np.zeros_like(arr),'x')
-    pp.show()
 
 def GroupData(arr):
     groups = {}
