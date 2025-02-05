@@ -5,7 +5,6 @@ import sys
 import time
 import threading
 import argparse
-from typing_extensions import List
 
 logger = logging.getLogger()
 peers = []
@@ -49,7 +48,7 @@ def main(server_host = '83.147.245.51', server_port = 9999):
     addr = MsgToAddr(data) # peer info
 
     send_th   = threading.Thread(target=Send,args=(sock,addr))
-    listen_th = threading.Thread(target=List,args=(sock,))
+    listen_th = threading.Thread(target=Listen,args=(sock,))
     send_th.start()
     listen_th.start()
     try:
