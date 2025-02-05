@@ -32,9 +32,9 @@ def Listen(sock:socket.socket):
 
 def Send(sock:socket.socket,addr,window):
     global RUN_EVENT
-    while  not RUN_EVENT.is_set():
-        logger.info(f'SEND TO PORT [{addr[1]} - {addr[1]+window}]')
-        for offset in range(window):
+    while not RUN_EVENT.is_set():
+        logger.info(f'SEND TO PORT [ {addr[1]} - {addr[1]+window} ]')
+        for offset in range(window+1):
             msg = b'test request'
             sock.sendto(msg,(addr[0],addr[1]+offset))
 
@@ -53,6 +53,7 @@ def main(server_host = '83.147.245.51', server_port = 9999):
     data,addr = sock.recvfrom(1024)     # rec from server
     logger.info('Get client from server {} {}'.format(addr,data))
     addr = MsgToAddr(data) # peer info
+    logger.info('[ * ] Get Client '+str(addr))
 
     send_th   = threading.Thread(target=Send,args=(sock,addr,window))
     listen_th = threading.Thread(target=Listen,args=(sock,))
